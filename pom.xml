@@ -59,11 +59,6 @@
             <artifactId>maven-assembly-plugin</artifactId>
             <version>3.0.0</version>
         </dependency>
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>2.9.9</version>
-        </dependency>
     </dependencies>
 
     <build>
@@ -130,6 +125,11 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.5</version>
+                <configuration>
+                    <excludes>
+                        <exclude>com/parkit/parkingsystem/dao/**/*</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -147,5 +147,8 @@
             </plugin>
         </plugins>
     </build>
-
+<reporting>
+    <!-- Générer un rapport findbugs et résoudre les bugs -->
+    <!-- Générer un rapport surefire -->
+</reporting>
 </project>

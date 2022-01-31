@@ -124,4 +124,42 @@ public class FareCalculatorServiceTest {
         assertEquals( (24 * Fare.CAR_RATE_PER_HOUR) , ticket.getPrice());
     }
 
+    @Test
+    public void fareFreeCarWithLessThanThirtyMinutesParkingTime(){
+        //GIVEN
+        Date inTime = new Date();
+        inTime.setTime( System.currentTimeMillis() - ( 20 * 60 * 1000) );//20 minutes parking time should be free
+        Date outTime = new Date();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
+
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+
+        //WHEN
+        fareCalculatorService.calculateFare(ticket);
+
+        //THEN
+        assertEquals(0, ticket.getPrice() );
+    }
+
+    @Test
+    public void fareDiscountCarRegularClient(){
+        //GIVEN ticket d'un client déjà venu stationner en voiture depuis 1h
+        Date inTime = new Date();
+        Date outTime = new Date(inTime.getTime());
+        inTime.setTime( System.currentTimeMillis() - ( 60 * 60 * 1000) );
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
+
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        ticket.setAlreadyCame(true);
+
+        //WHEN calcul le prix d'un ticket
+        fareCalculatorService.calculateFare(ticket);
+
+        //THEN prix est de 1.425
+        assertEquals(1.425, ticket.getPrice() );
+    }
 }
