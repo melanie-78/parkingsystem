@@ -1,6 +1,5 @@
 package com.parkit.parkingsystem.model;
 
-import java.util.Calendar;
 import java.util.Date;
 
 public class Ticket {
@@ -10,6 +9,7 @@ public class Ticket {
     private double price;
     private Date inTime;
     private Date outTime;
+    private boolean isAlreadyCame;
 
     public int getId() {
         return id;
@@ -58,4 +58,9 @@ public class Ticket {
     public void setOutTime(Date outTime) {
         this.outTime = outTime;
     }
+
+    public boolean isAlreadyCame(){ return isAlreadyCame;}
+
+    public void setAlreadyCame(boolean b) { isAlreadyCame = b;}
 }
+

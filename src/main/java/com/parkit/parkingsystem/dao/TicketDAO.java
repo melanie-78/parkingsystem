@@ -40,13 +40,36 @@ public class TicketDAO {
         }
     }
 
+    public int getTicketNumberOccurence(String vehicleRegNumber){
+        Connection con = null;
+        int result = 0;
+        try {
+            con = dataBaseConfig.getConnection();
+            PreparedStatement ps = con.prepareStatement(DBConstants.COUNT_TICKET_OCCURENCE);
+            //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME
+            ps.setString(1,vehicleRegNumber);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            result = rs.getInt("count(*)");
+            dataBaseConfig.closeResultSet(rs);
+            dataBaseConfig.closePreparedStatement(ps);
+            return result;
+        }catch (Exception ex){
+            logger.error("Error fetching next available slot",ex);
+        }finally {
+            dataBaseConfig.closeConnection(con);
+            return result;
+        }
+    }
+
     public Ticket getTicket(String vehicleRegNumber) {
         Connection con = null;
         Ticket ticket = null;
+        int ticketNumberOccurence = getTicketNumberOccurence(vehicleRegNumber);
         try {
             con = dataBaseConfig.getConnection();
             PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET);
-            //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
+            //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME
             ps.setString(1,vehicleRegNumber);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
@@ -58,6 +81,13 @@ public class TicketDAO {
                 ticket.setPrice(rs.getDouble(3));
                 ticket.setInTime(rs.getTimestamp(4));
                 ticket.setOutTime(rs.getTimestamp(5));
+
+                if(ticketNumberOccurence > 0) {
+                    ticket.setAlreadyCame(true);
+
+                }else {
+                    ticket.setAlreadyCame(false);
+                }
             }
             dataBaseConfig.closeResultSet(rs);
             dataBaseConfig.closePreparedStatement(ps);
