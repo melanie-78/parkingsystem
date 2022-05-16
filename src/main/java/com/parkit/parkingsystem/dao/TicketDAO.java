@@ -20,6 +20,7 @@ public class TicketDAO {
     public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
     public boolean saveTicket(Ticket ticket){
+        boolean result = false;
         Connection con = null;
         try {
             con = dataBaseConfig.getConnection();
@@ -36,17 +37,18 @@ public class TicketDAO {
                 } else {
                     ps.setTimestamp(5, null);
                 }
-                return ps.execute();
+                result = ps.execute();
             }finally {
                 ps.close();
             }
 
         }catch (Exception ex){
             logger.error("Error fetching next available slot",ex);
+            result = false;
         }finally {
             dataBaseConfig.closeConnection(con);
-            return false;
         }
+        return result;
     }
 
     public int getTicketNumberOccurrence(String vehicleRegNumber){

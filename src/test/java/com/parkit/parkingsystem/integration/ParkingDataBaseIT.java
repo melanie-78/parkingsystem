@@ -87,7 +87,5 @@ public class ParkingDataBaseIT {
         Ticket abcdef = ticketDAO.getTicket("ABCDEF");
         assertNotEquals(null, abcdef.getOutTime());
         assertNotEquals(0,abcdef.getPrice());
-
     }
-
 }
